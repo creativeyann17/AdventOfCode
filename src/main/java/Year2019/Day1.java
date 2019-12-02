@@ -20,10 +20,9 @@ public class Day1 {
 
   public static BigDecimal computeRequiredFuelForMass(String mass) {
     if (NumberUtils.isParsable(mass)) {
-      return new BigDecimal(mass)
-          .divide(new BigDecimal(3), 2, RoundingMode.HALF_EVEN)
-          .setScale(0, RoundingMode.DOWN)
+      BigDecimal requiredFuelForMass = new BigDecimal(mass).divide(new BigDecimal(3), 2, RoundingMode.HALF_EVEN).setScale(0, RoundingMode.DOWN)
           .subtract(new BigDecimal(2));
+      return requiredFuelForMass.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : requiredFuelForMass;
     } else {
       return BigDecimal.ZERO;
     }

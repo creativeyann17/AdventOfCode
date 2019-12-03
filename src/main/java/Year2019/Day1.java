@@ -12,10 +12,12 @@ import org.apache.commons.lang3.math.NumberUtils;
 public class Day1 {
   public static void main(String[]args) throws IOException {
     Stream<String> stream = Files.lines(Paths.get("./data/input1.txt"));
-    BigDecimal totalMass = stream.map(mass ->
-        computeRequiredFuelForMass(mass)
-    ).reduce(BigDecimal.ZERO, BigDecimal::add);
-    System.out.println(totalMass);
+    BigDecimal totalMass = stream.map(mass -> computeRequiredFuelForMass(mass)).reduce(BigDecimal.ZERO, BigDecimal::add);
+    System.out.println(totalMass);  // answer 1
+
+    Stream<String> stream2 = Files.lines(Paths.get("./data/input1.txt"));
+    BigDecimal totalMass2 = stream2.map(componentMass -> computeRequiredFuelWithFuelForMass(componentMass)).reduce(BigDecimal.ZERO, BigDecimal::add);
+    System.out.println(totalMass2); // answer 2
   }
 
   public static BigDecimal computeRequiredFuelForMass(String mass) {
@@ -25,6 +27,15 @@ public class Day1 {
       return requiredFuelForMass.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : requiredFuelForMass;
     } else {
       return BigDecimal.ZERO;
+    }
+  }
+
+  public static BigDecimal computeRequiredFuelWithFuelForMass(String componentMass) {
+    BigDecimal requiredFuelForFuel = Day1.computeRequiredFuelForMass(componentMass);
+    if (requiredFuelForFuel.compareTo(BigDecimal.ZERO) <= 0) {
+      return BigDecimal.ZERO;
+    } else {
+      return requiredFuelForFuel.add(computeRequiredFuelWithFuelForMass(String.valueOf(requiredFuelForFuel)));
     }
   }
 }

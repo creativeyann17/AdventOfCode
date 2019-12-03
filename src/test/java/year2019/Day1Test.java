@@ -1,4 +1,4 @@
-package Year2019;
+package year2019;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -1,17 +1,10 @@
-package Year2019;
+package year2019;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
 class Day3Test {
-
-  @Test
-  void distance() {
-    Day3.WirePosition p1 = new Day3.WirePosition(5,2);
-    assertEquals(5, p1.compareTo(new Day3.WirePosition(0,0)));
-    assertEquals(8, p1.compareTo(new Day3.WirePosition(7,10)));
-  }
 
   @Test
   void collision() {

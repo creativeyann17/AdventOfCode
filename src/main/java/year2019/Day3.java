@@ -1,12 +1,13 @@
-package Year2019;
+package year2019;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Day3 {
@@ -30,6 +31,15 @@ public class Day3 {
 
     WirePosition[] fewerSteps = wire1.getManhattanDistance(wire2, true);
     System.out.println(Arrays.asList(fewerSteps) + " steps " + (fewerSteps[0].steps + fewerSteps[1].steps)); // answer 2 was 56410
+
+    /*
+
+    146120
+    149225
+    {181,376,42121} sum 557
+    [{1128,478,12042}, {1128,478,44368}] steps 56410
+
+     */
   }
 
   public static class Wire {
@@ -66,16 +76,20 @@ public class Day3 {
       WirePosition lastGoodP1 = null;
       WirePosition lastGoodP2 = null;
 
-      List<WirePosition> copyOfPositions1 = new ArrayList<>(this.positions);
-      List<WirePosition> copyOfPositions2 = new ArrayList<>(other.positions);
+      List<WirePosition> copyOfPositions1 = null;
+      List<WirePosition> copyOfPositions2 = null;
 
-      Iterator<WirePosition> it1 = copyOfPositions1.iterator();
-      WirePosition pos1, pos2;
-      while (it1.hasNext()) {
-        pos1 = it1.next();
-        Iterator<WirePosition> it2 = copyOfPositions2.iterator();
-        while (it2.hasNext()) {
-          pos2 = it2.next();
+      if (preferLowerStepsOverDistance) {
+        copyOfPositions1 = this.positions.stream().collect(Collectors.toList());  // just copy
+        copyOfPositions2 = other.positions.stream().collect(Collectors.toList()); // just copy
+      } else {
+        copyOfPositions1 = this.positions.stream().sorted(Comparator.comparingInt(WirePosition::getDistanceToOrigin)).collect(Collectors.toList());
+        copyOfPositions2 = other.positions.stream().sorted(Comparator.comparingInt(WirePosition::getDistanceToOrigin)).collect(Collectors.toList());
+      }
+
+      outerLoop:
+      for (WirePosition pos1 : copyOfPositions1) {
+        for (WirePosition pos2 : copyOfPositions2) {
           if (pos1.equals(pos2)) {
             if (preferLowerStepsOverDistance) {
               if (lastGoodP1 == null || lastGoodP2 == null || (pos1.steps + pos2.steps) < (lastGoodP1.steps + lastGoodP2.steps)) {
@@ -83,37 +97,15 @@ public class Day3 {
                 lastGoodP2 = pos2;
               }
             } else {
-              if (lastGoodP1 == null || pos1.compareTo(ORIGIN) < lastGoodP1.compareTo(ORIGIN)) {
-                lastGoodP1 = pos1;
-                lastGoodP2 = pos2;
-              }
+              lastGoodP1 = pos1;
+              lastGoodP2 = pos2;
+              break outerLoop;
             }
-
-          }
-          // optimisation of hell ....
-          if (preferLowerStepsOverDistance) {
-            removeIfOutOfSteps(lastGoodP1, lastGoodP2, pos1, pos2, it2);
-          } else {
-            removeIfOutOfRange(lastGoodP1, pos2, it2);
           }
         }
       }
 
       return new WirePosition[] { lastGoodP1, lastGoodP2 };
-    }
-
-    private static void removeIfOutOfSteps(WirePosition betterSolution1, WirePosition betterSolution2, WirePosition currentItPosition1,
-        WirePosition currentItPosition2, Iterator<WirePosition> it) {
-      if (betterSolution1 != null && betterSolution2 != null && (betterSolution1.steps + betterSolution2.steps) < (currentItPosition1.steps
-          + currentItPosition2.steps)) {
-        it.remove();
-      }
-    }
-
-    private static void removeIfOutOfRange(WirePosition betterSolution, WirePosition currentItPosition, Iterator<WirePosition> it) {
-      if (betterSolution != null && betterSolution.compareTo(ORIGIN) < currentItPosition.compareTo(ORIGIN)) {
-        it.remove();
-      }
     }
 
     private List<WireInstruction> parseInstructions(String instructions) {
@@ -126,7 +118,7 @@ public class Day3 {
   }
 
 
-  public static class WirePosition implements Comparable<WirePosition> {
+  public static class WirePosition {
     public int x;
     public int y;
     public int steps;
@@ -151,10 +143,10 @@ public class Day3 {
       return String.format("{%s,%s,%s}", x, y, steps);
     }
 
-    @Override
-    public int compareTo(WirePosition o) {
-      return (int) Math.sqrt(Math.pow(o.y - y, 2) + Math.pow(o.x - x, 2));
+    public int getDistanceToOrigin() {
+      return (int) Math.sqrt(Math.pow(ORIGIN.y - y, 2) + Math.pow(ORIGIN.x - x, 2));
     }
+
   }
 
 

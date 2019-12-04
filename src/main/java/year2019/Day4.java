@@ -36,7 +36,7 @@ public class Day4 {
         wasSameDigit++;
       } else {
         if (wasSameDigit > 0 && (wasSameDigit + 1) % 2 != 0) {
-          return false; // not a group of pair number
+          //return false; // not a group of pair number
         }
         if (wasSameDigit == 1) {
           wasAnyDouble++; // one double !
@@ -47,7 +47,7 @@ public class Day4 {
     }
 
     if (wasSameDigit > 0 && (wasSameDigit + 1) % 2 != 0) {
-      return false; // not a group of pair number
+      //return false; // not a group of pair number
     }
     if (wasSameDigit == 1) {
       wasAnyDouble++; // one double !

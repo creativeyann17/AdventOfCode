@@ -1,9 +1,9 @@
 package year2019;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 class Day4Test {
 
@@ -19,5 +19,6 @@ class Day4Test {
     assertFalse(Day4.isValidPassword(1234567, 200000, 9999999));
     assertFalse(Day4.isValidPassword(123444, 0, 999999));
     assertTrue(Day4.isValidPassword(111122, 0, 999999));
+    assertTrue(Day4.isValidPassword(111223, 0, 999999));
   }
 }

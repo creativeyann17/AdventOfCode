@@ -1,102 +1,48 @@
 package year2019;
 
+import java.util.stream.IntStream;
+
 public class Day4 {
 
   public static final int MIN = 256310;
   public static final int MAX = 732736;
 
   public static void main(String[] args) {
-    int countOfValidPwd = 0;
-    for (int i = MIN; i <= MAX; i++) {
-      if (isValidPassword(i, MIN, MAX)) {
-        System.out.println(i);
-        countOfValidPwd++;
-      }
-    }
-    System.out.println(countOfValidPwd);
+
+    long start = System.currentTimeMillis();
+    long countOfValidPassword = IntStream.rangeClosed(MIN, MAX).filter(number -> isValidPassword(number, MIN, MAX)).count();
+    System.out.println(String.format("Result: %s in %s ms", countOfValidPassword, (System.currentTimeMillis() - start)));
+
+    // step 1: 979
+    // step 2: 635
   }
 
   public static boolean isValidPassword(int password, int min, int max) {
-    final String pwdStr = String.valueOf(password);
-    if (pwdStr.length() != 6) {
-      return false;
-    }
     if (password < min || password > max) {
       return false;
     }
-    int lastDigitInt = -1;
-    int wasSameDigit = 0;
-    int wasAnyDouble = 0;
-    for (char c : pwdStr.toCharArray()) {
-      int currentDigit = Integer.parseInt(String.valueOf(c));
-      if (currentDigit < lastDigitInt) {
+    String passwordStr = String.valueOf(password);
+    int previousNuUmber = -1;
+    int countOfSameNumber = 0;
+    int countOfPair = 0;
+    for (char numberStr : passwordStr.toCharArray()) {
+      int number = Integer.parseInt(String.valueOf(numberStr));
+      if (number < previousNuUmber) {
         return false;
-      }
-      if (lastDigitInt == currentDigit) {
-        wasSameDigit++;
+      } else if (number == previousNuUmber) {
+        countOfSameNumber++;
       } else {
-        if (wasSameDigit > 0 && (wasSameDigit + 1) % 2 != 0) {
-          //return false; // not a group of pair number
+        if (countOfSameNumber == 1) {
+          countOfPair++;
         }
-        if (wasSameDigit == 1) {
-          wasAnyDouble++; // one double !
-        }
-        wasSameDigit = 0;
+        countOfSameNumber = 0;
       }
-      lastDigitInt = currentDigit;
+      previousNuUmber = number;
     }
-
-    if (wasSameDigit > 0 && (wasSameDigit + 1) % 2 != 0) {
-      //return false; // not a group of pair number
+    if (countOfSameNumber == 1) {
+      countOfPair++;
     }
-    if (wasSameDigit == 1) {
-      wasAnyDouble++; // one double !
-    }
-
-    if (wasAnyDouble == 0) {
-      return false;
-    }
-
-    return true;
+    return countOfPair > 0;
   }
-  /*
-  public static boolean isValidPassword(int password, int min, int max) {
-    final String pwdStr = String.valueOf(password);
-    if (pwdStr.length() != 6) {
-      return false;
-    }
-    if (password < min || password > max) {
-      return false;
-    }
-    int lastDigitInt = -1;
-    int wasSameDigit = 0;
-    int wasAnyDouble = 0;
-    for (char c : pwdStr.toCharArray()) {
-      int currentDigit = Integer.parseInt(String.valueOf(c));
-      if (currentDigit < lastDigitInt) {
-        return false;
-      }
-      if (lastDigitInt == currentDigit) {
-        wasSameDigit++;
-      } else {
-        if (wasSameDigit > 0 && (wasSameDigit + 1) % 2 != 0) {
-          // return false; // not a group of pair number
-        }
-        if (wasSameDigit >= 1) {
-          wasAnyDouble++; // one double !
-        }
-        wasSameDigit = 0;
-      }
-      lastDigitInt = currentDigit;
-    }
 
-    if (wasSameDigit > 0 && (wasSameDigit + 1) % 2 != 0) {
-      // return false; // not a group of pair number
-    }
-    if (wasSameDigit >= 1) {
-      wasAnyDouble++; // one double !
-    }
-
-    return (wasAnyDouble >= 1);
-  }*/
 }

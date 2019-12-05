@@ -26,7 +26,7 @@ public class Day2 {
           code.set(1, i);
           code.set(2, j);
           List<Integer> results = execute();
-          if (results.get(0) == 19690720) {
+          if (results.get(0) == expected) {
             return results;
           }
         }

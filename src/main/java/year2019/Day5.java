@@ -142,7 +142,7 @@ public class Day5 {
     }
 
     public boolean isValid() {
-      return (param1Mode == 0 || param1Mode == 1) && (param2Mode == 0 || param2Mode == 1) && (param2Mode == 0 || param2Mode == 1);
+      return (param1Mode == 0 || param1Mode == 1) && (param2Mode == 0 || param2Mode == 1) && (param3Mode == 0 || param3Mode == 1);
     }
   }
 

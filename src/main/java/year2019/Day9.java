@@ -53,7 +53,7 @@ public class Day9 {
 
       if (operation.code == OPERATION_INPUT) {
         BigDecimal operandResult =
-            getValueByMode(instructionCopy, Parameter.MODE_IMMEDIATE, relativeAddr, i + 1);
+            getValueByMode(instructionCopy, operation.param1Mode, relativeAddr, i + 1);
         int input = inputs[inputIndex++];
         setValueWithPadding(instructionCopy, new BigDecimal(input), operandResult);
         System.out.println("Input: " + input);
@@ -66,7 +66,7 @@ public class Day9 {
         inc = 2;
       } else if (operation.code == OPERATION_RELATIVE_ADDR) {
         BigDecimal operandResult =
-            getValueByMode(instructionCopy, Parameter.MODE_IMMEDIATE, relativeAddr, i + 1);
+            getValueByMode(instructionCopy, operation.param1Mode, relativeAddr, i + 1);
         relativeAddr = relativeAddr.add(operandResult);
         System.out.println("Relative Addr: " + relativeAddr);
         inc = 2;
@@ -182,7 +182,7 @@ public class Day9 {
         param.code = Integer.parseInt(valueStr.substring(3, 5));
         param.param1Mode = Integer.parseInt(String.valueOf(valueStr.charAt(2)));
         param.param2Mode = Integer.parseInt(String.valueOf(valueStr.charAt(1)));
-        param.param3Mode = Integer.parseInt(String.valueOf(valueStr.charAt(0)));
+        // param.param3Mode = Integer.parseInt(String.valueOf(valueStr.charAt(0)));
       }
       return param;
     }

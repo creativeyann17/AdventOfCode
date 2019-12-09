@@ -28,13 +28,16 @@ public class Day5 {
   }
 
   public static List<Integer> parseInstructions(String instructions) {
-    return Arrays.asList(instructions.split(",")).stream().map(instruction -> Integer.parseInt(instruction)).collect(Collectors.toList());
+    return Arrays.asList(instructions.split(",")).stream()
+        .map(instruction -> Integer.parseInt(instruction))
+        .collect(Collectors.toList());
   }
 
-  public static List<Integer> execute(List<Integer> instructions) {
+  public static List<Integer> execute(List<Integer> instructions, int... inputs) {
     List<Integer> instructionCopy = new ArrayList<>(instructions);
     Scanner sc = new Scanner(System.in);
     int inc = 0;
+    int inputIndex = 0;
     for (int i = 0; i < instructionCopy.size(); i += inc) {
       Parameter operation = Parameter.parse(instructionCopy.get(i));
 
@@ -50,8 +53,9 @@ public class Day5 {
 
       if (operation.code == OPERATION_INPUT) {
         int operandResult = getValueByMode(instructionCopy, Parameter.MODE_IMMEDIATE, i + 1);
-        System.out.print("Input: ");
-        setValueWithPadding(instructionCopy, INPUT != -1 ? INPUT : sc.nextInt(), operandResult);
+        int input = INPUT != -1 ? INPUT : inputs[inputIndex++];
+        setValueWithPadding(instructionCopy, input, operandResult);
+        System.out.println("Input: " + input);
         inc = 2;
       } else if (operation.code == OPERATION_OUTPUT) {
         int operandResult = getValueByMode(instructionCopy, operation.param1Mode, i + 1);
@@ -142,8 +146,9 @@ public class Day5 {
     }
 
     public boolean isValid() {
-      return (param1Mode == 0 || param1Mode == 1) && (param2Mode == 0 || param2Mode == 1) && (param3Mode == 0 || param3Mode == 1);
+      return (param1Mode == 0 || param1Mode == 1)
+          && (param2Mode == 0 || param2Mode == 1)
+          && (param3Mode == 0 || param3Mode == 1);
     }
   }
-
 }

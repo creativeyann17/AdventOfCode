@@ -23,7 +23,7 @@ public class Day9 {
 
   public static void main(String[] args) throws IOException {
     String input = Utils.readFile("./data/input9.txt");
-    execute(parseInstructions(input), BigDecimal.ZERO, 1);
+    execute(parseInstructions(input), BigDecimal.ZERO, 2);
   }
 
   public static List<BigDecimal> parseInstructions(String instructions) {
@@ -41,6 +41,8 @@ public class Day9 {
       BigDecimal code = instructionCopy.get(i);
       Day9.Parameter operation = Day9.Parameter.parse(code);
 
+      System.out.println(instructionCopy);
+
       inc = 1;
 
       if (!operation.isValid()) {
@@ -53,16 +55,21 @@ public class Day9 {
 
       if (operation.code == OPERATION_INPUT) {
         BigDecimal operandResult =
-            getValueByMode(instructionCopy, operation.param1Mode, relativeAddr, i + 1);
+            getValueByMode(instructionCopy, Parameter.MODE_IMMEDIATE, relativeAddr, i + 1);
         int input = inputs[inputIndex++];
-        setValueWithPadding(instructionCopy, new BigDecimal(input), operandResult);
+        setValueWithPadding(
+            instructionCopy,
+            new BigDecimal(input),
+            operandResult,
+            operation.param1Mode,
+            relativeAddr);
         System.out.println("Input: " + input);
         inc = 2;
       } else if (operation.code == OPERATION_OUTPUT) {
         BigDecimal operandResult =
             getValueByMode(instructionCopy, operation.param1Mode, relativeAddr, i + 1);
-        System.out.println("Output: " + operandResult);
-        OUTPUT = operandResult;
+        OUTPUT = operandResult; // instructionCopy.get(operandResult.intValue());
+        System.out.println("Output: " + OUTPUT);
         inc = 2;
       } else if (operation.code == OPERATION_RELATIVE_ADDR) {
         BigDecimal operandResult =
@@ -76,8 +83,13 @@ public class Day9 {
         BigDecimal operandRight =
             getValueByMode(instructionCopy, operation.param2Mode, relativeAddr, i + 2);
         BigDecimal operandResult =
-            getValueByMode(instructionCopy, operation.param3Mode, relativeAddr, i + 3);
-        setValueWithPadding(instructionCopy, operandLeft.add(operandRight), operandResult);
+            getValueByMode(instructionCopy, Parameter.MODE_IMMEDIATE, relativeAddr, i + 3);
+        setValueWithPadding(
+            instructionCopy,
+            operandLeft.add(operandRight),
+            operandResult,
+            operation.param3Mode,
+            relativeAddr);
         inc = 4;
       } else if (operation.code == OPERATION_MULT) {
         BigDecimal operandLeft =
@@ -85,15 +97,20 @@ public class Day9 {
         BigDecimal operandRight =
             getValueByMode(instructionCopy, operation.param2Mode, relativeAddr, i + 2);
         BigDecimal operandResult =
-            getValueByMode(instructionCopy, operation.param3Mode, relativeAddr, i + 3);
-        setValueWithPadding(instructionCopy, operandLeft.multiply(operandRight), operandResult);
+            getValueByMode(instructionCopy, Parameter.MODE_IMMEDIATE, relativeAddr, i + 3);
+        setValueWithPadding(
+            instructionCopy,
+            operandLeft.multiply(operandRight),
+            operandResult,
+            operation.param3Mode,
+            relativeAddr);
         inc = 4;
       } else if (operation.code == OPERATION_JUMP_IF_TRUE) {
         BigDecimal operandLeft =
             getValueByMode(instructionCopy, operation.param1Mode, relativeAddr, i + 1);
         BigDecimal operandRight =
             getValueByMode(instructionCopy, operation.param2Mode, relativeAddr, i + 2);
-        if (!operandLeft.equals(BigDecimal.ZERO)) {
+        if (operandLeft.compareTo(BigDecimal.ZERO) != 0) {
           i = operandRight.intValue();
           inc = 0;
         }
@@ -102,7 +119,7 @@ public class Day9 {
             getValueByMode(instructionCopy, operation.param1Mode, relativeAddr, i + 1);
         BigDecimal operandRight =
             getValueByMode(instructionCopy, operation.param2Mode, relativeAddr, i + 2);
-        if (operandLeft.equals(BigDecimal.ZERO)) {
+        if (operandLeft.compareTo(BigDecimal.ZERO) == 0) {
           i = operandRight.intValue();
           inc = 0;
         }
@@ -112,11 +129,13 @@ public class Day9 {
         BigDecimal operandRight =
             getValueByMode(instructionCopy, operation.param2Mode, relativeAddr, i + 2);
         BigDecimal operandResult =
-            getValueByMode(instructionCopy, operation.param3Mode, relativeAddr, i + 3);
+            getValueByMode(instructionCopy, Parameter.MODE_IMMEDIATE, relativeAddr, i + 3);
         setValueWithPadding(
             instructionCopy,
             operandLeft.compareTo(operandRight) < 0 ? BigDecimal.ONE : BigDecimal.ZERO,
-            operandResult);
+            operandResult,
+            operation.param3Mode,
+            relativeAddr);
         inc = 4;
       } else if (operation.code == OPERATION_EQUALS) {
         BigDecimal operandLeft =
@@ -124,11 +143,13 @@ public class Day9 {
         BigDecimal operandRight =
             getValueByMode(instructionCopy, operation.param2Mode, relativeAddr, i + 2);
         BigDecimal operandResult =
-            getValueByMode(instructionCopy, operation.param3Mode, relativeAddr, i + 3);
+            getValueByMode(instructionCopy, Parameter.MODE_IMMEDIATE, relativeAddr, i + 3);
         setValueWithPadding(
             instructionCopy,
-            operandLeft.equals(operandRight) ? BigDecimal.ONE : BigDecimal.ZERO,
-            operandResult);
+            operandLeft.compareTo(operandRight) == 0 ? BigDecimal.ONE : BigDecimal.ZERO,
+            operandResult,
+            operation.param3Mode,
+            relativeAddr);
         inc = 4;
       }
     }
@@ -142,7 +163,14 @@ public class Day9 {
   }
 
   private static void setValueWithPadding(
-      List<BigDecimal> instructions, BigDecimal value, BigDecimal index) {
+      List<BigDecimal> instructions,
+      BigDecimal value,
+      BigDecimal index,
+      int mode,
+      BigDecimal relativeAddr) {
+    if (mode == Parameter.MODE_RELATIVE) {
+      index = index.add(relativeAddr);
+    }
     fillMemory(instructions, index);
     instructions.set(index.intValue(), value);
   }
@@ -169,12 +197,12 @@ public class Day9 {
     public int code;
     public int param1Mode = MODE_POSITION;
     public int param2Mode = MODE_POSITION;
-    public int param3Mode = MODE_IMMEDIATE;
+    public int param3Mode = MODE_POSITION;
 
     public static Day9.Parameter parse(BigDecimal value) {
       Day9.Parameter param = new Day9.Parameter();
 
-      if (String.valueOf(value).length() <= 2) {
+      if (value.compareTo(BigDecimal.ZERO) < 0) {
         param.code = value.intValue();
       } else {
         String valueStr = String.format("%05d", value.intValue());
@@ -182,8 +210,9 @@ public class Day9 {
         param.code = Integer.parseInt(valueStr.substring(3, 5));
         param.param1Mode = Integer.parseInt(String.valueOf(valueStr.charAt(2)));
         param.param2Mode = Integer.parseInt(String.valueOf(valueStr.charAt(1)));
-        // param.param3Mode = Integer.parseInt(String.valueOf(valueStr.charAt(0)));
+        param.param3Mode = Integer.parseInt(String.valueOf(valueStr.charAt(0)));
       }
+
       return param;
     }
 

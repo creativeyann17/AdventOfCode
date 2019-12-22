@@ -1,14 +1,13 @@
 package year2019;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class Day14 {
   public static void main(String[] args) throws IOException {
-    List<String> lines = Utils.readLines("./data/input14.txt");
+    List<String> lines = Utils.readLines("./data/input14_0.txt");
     Map<String, Chemical> chemicals = new TreeMap<>();
     for (String line : lines) {
       Chemical chemical = Chemical.getInstance(line);
@@ -20,16 +19,17 @@ public class Day14 {
     Map<String, Integer> allRequired = new TreeMap<>();
     fuel.getAllRequired(chemicals, " ORE", allRequired);
     System.out.println(allRequired);
-    BigDecimal count = BigDecimal.ZERO;
-    for (String c : allRequired.keySet()) {
-      double qc = allRequired.get(c);
-      if (c.equals("ORE")) {
-        count = count.add(new BigDecimal(qc));
+    int oreCount = 0;
+    for (String reqName : allRequired.keySet()) {
+      if (reqName.equals("ORE")) {
+        oreCount += allRequired.get(reqName);
       } else {
-        count = count.add(new BigDecimal(chemicals.get(c).getRequired(chemicals, "ORE") / qc));
+        long minCount =
+            Math.round((allRequired.get(reqName) / chemicals.get(reqName).quantity) + 0.5);
+        oreCount += minCount * chemicals.get(reqName).getRequired(chemicals, "ORE");
       }
     }
-    System.out.println(count);
+    System.out.println(oreCount);
   }
 
   public static class Chemical {
@@ -51,6 +51,19 @@ public class Day14 {
       return chemical;
     }
 
+    public int getRequired(Map<String, Chemical> chemicals, String requiredChemical) {
+      int count = 0;
+      for (String reqName : required.keySet()) {
+        if (reqName.equals(requiredChemical)) {
+          count += quantity;
+        } else {
+          Chemical req = chemicals.get(reqName);
+          count += req.getRequired(chemicals, requiredChemical);
+        }
+      }
+      return count;
+    }
+
     public void getAllRequired(
         Map<String, Chemical> chemicals,
         String requiredChemical,
@@ -65,27 +78,6 @@ public class Day14 {
           chemicals.get(reqName).getAllRequired(chemicals, requiredChemical, allRequired);
         }
       }
-    }
-
-    public double getRequired(Map<String, Chemical> chemicals, String requiredChenical) {
-      double count = 0;
-      if (this.name.equals(requiredChenical)) {
-        count = this.quantity;
-      } else {
-        for (String reqName : required.keySet()) {
-          int reqQuantity = this.required.get(reqName);
-          if (reqName.equals(requiredChenical)) {
-            count += reqQuantity;
-          } else {
-            Chemical req = chemicals.get(reqName);
-            // double minRequired = (reqQuantity / req.quantity) + 1;
-            double required = req.getRequired(chemicals, requiredChenical) / req.quantity;
-            System.out.println(required + " " + requiredChenical + " => 1 " + reqName);
-            count += required;
-          }
-        }
-      }
-      return count;
     }
 
     @Override

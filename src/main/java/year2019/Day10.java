@@ -11,7 +11,7 @@ public class Day10 {
   public static void main(String[] args) throws IOException {
     Belt belt = Belt.getInstance("./data/input10.txt");
     System.out.println(belt);
-    System.out.println(belt.find());
+    System.out.println(belt.find()); // best x=17 y=23
   }
 
   public static class Delta {
@@ -72,9 +72,9 @@ public class Day10 {
                 }
               }
             }
-            System.out.println(x1 + " " + y1 + " " + visible);
             if (visible.size() > bestLocationCount) {
               bestLocationCount = visible.size();
+              System.out.println(x1 + " " + y1 + " " + visible);
             }
           }
         }

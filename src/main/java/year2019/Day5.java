@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import utils.Utils;
+
 public class Day5 {
 
   public static final int OPERATION_EXIT = 99;
@@ -23,7 +25,7 @@ public class Day5 {
   public static int OUTPUT = -1;
 
   public static void main(String[] args) throws IOException {
-    String input = Utils.readFile("./data/input5.txt");
+    String input = Utils.readFile("./data/2019/input5.txt");
     execute(parseInstructions(input));
   }
 

@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import utils.Utils;
+
 public class Day6 {
 
   public static void main(String[] args) throws IOException {
-    List<String> orbits = Utils.readLines("./data/input6.txt");
+    List<String> orbits = Utils.readLines("./data/2019/input6.txt");
     Graph graph = Graph.getInstance(orbits);
     System.out.println(graph.getEdgesCount());
     System.out.println(graph.findPath("YOU", "SAN"));

@@ -7,10 +7,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import utils.Utils;
+
 public class Day8 {
 
   public static void main(String[] args) throws IOException {
-    Image image = new Image(Utils.readFile("./data/input8.txt"), 25, 6);
+    Image image = new Image(Utils.readFile("./data/2019/input8.txt"), 25, 6);
     // System.out.println(image);
     List<Integer> lessCorruptedLayer = image.getLessCorruptedLayer();
     Map<Integer, Integer> counts =

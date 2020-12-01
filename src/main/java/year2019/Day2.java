@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public class Day2 {
 
   public static void main(String[] args) throws IOException {
-    Computer computer = Computer.getInstanceFromPath("./data/input2.txt");
+    Computer computer = Computer.getInstanceFromPath("./data/2019/input2.txt");
     System.out.println(computer.code);
     System.out.println(computer.execute());
     System.out.println(computer.execute(19690720));

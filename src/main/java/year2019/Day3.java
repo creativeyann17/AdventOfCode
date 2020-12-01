@@ -15,7 +15,7 @@ public class Day3 {
   public static WirePosition ORIGIN = new WirePosition(0, 0);
 
   public static void main(String[] args) throws IOException {
-    Stream<String> stream = Files.lines(Paths.get("./data/input3.txt"));
+    Stream<String> stream = Files.lines(Paths.get("./data/2019/input3.txt"));
     List<String> lines = new ArrayList<>();
     stream.forEach(line -> lines.add(line));
 

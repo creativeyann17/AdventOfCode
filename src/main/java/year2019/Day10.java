@@ -7,9 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import utils.Utils;
+
 public class Day10 {
   public static void main(String[] args) throws IOException {
-    Belt belt = Belt.getInstance("./data/input10.txt");
+    Belt belt = Belt.getInstance("./data/2019/input10.txt");
     System.out.println(belt);
     System.out.println(belt.find()); // best x=17 y=23
   }

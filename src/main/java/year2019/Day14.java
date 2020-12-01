@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import utils.Utils;
+
 public class Day14 {
   public static void main(String[] args) throws IOException {
-    List<String> lines = Utils.readLines("./data/input14_0.txt");
+    List<String> lines = Utils.readLines("./data/2019/input14_0.txt");
     Map<String, Chemical> chemicals = new TreeMap<>();
     for (String line : lines) {
       Chemical chemical = Chemical.getInstance(line);

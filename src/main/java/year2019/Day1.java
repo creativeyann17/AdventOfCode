@@ -11,11 +11,11 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 public class Day1 {
   public static void main(String[]args) throws IOException {
-    Stream<String> stream = Files.lines(Paths.get("./data/input1.txt"));
+    Stream<String> stream = Files.lines(Paths.get("./data/2019/input1.txt"));
     BigDecimal totalMass = stream.map(mass -> computeRequiredFuelForMass(mass)).reduce(BigDecimal.ZERO, BigDecimal::add);
     System.out.println(totalMass);  // answer 1
 
-    Stream<String> stream2 = Files.lines(Paths.get("./data/input1.txt"));
+    Stream<String> stream2 = Files.lines(Paths.get("./data/2019/input1.txt"));
     BigDecimal totalMass2 = stream2.map(componentMass -> computeRequiredFuelWithFuelForMass(componentMass)).reduce(BigDecimal.ZERO, BigDecimal::add);
     System.out.println(totalMass2); // answer 2
   }

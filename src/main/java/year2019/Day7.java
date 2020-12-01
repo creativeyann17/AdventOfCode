@@ -5,11 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import utils.Utils;
+
 public class Day7 {
 
   public static void main(String[] args) throws IOException {
     // step 1 = 23104 = 67023
-    String input = Utils.readFile("./data/input7.txt");
+    String input = Utils.readFile("./data/2019/input7.txt");
     String bestPhases = null;
     int bestOutput = -1;
 

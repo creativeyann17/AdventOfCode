@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import utils.Utils;
+
 public class Day9 {
 
   public static final int OPERATION_EXIT = 99;
@@ -22,7 +24,7 @@ public class Day9 {
   public static BigDecimal OUTPUT = new BigDecimal(-1);
 
   public static void main(String[] args) throws IOException {
-    String input = Utils.readFile("./data/input9.txt");
+    String input = Utils.readFile("./data/2019/input9.txt");
     execute(parseInstructions(input), BigDecimal.ZERO, 2);
   }
 
